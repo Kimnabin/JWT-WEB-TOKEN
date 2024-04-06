@@ -88,18 +88,18 @@ const authController = {
     },
 
     
-    requestRefeshToken: async (req, res) => {
+    requestRefeshToken: async (req, res) => {   // Request refresh token
         // Take refresh token from user
-        const refreshToken = req.cookies.refreshToken;
+        const refreshToken = req.cookies.refreshToken;  // Lay refresh token tu cookie
         if (!refreshToken) {
            return res.status(403).json("User not authenticated!~");
         };
 
-        if (!refreshTokens.includes(refreshToken)) {
+        if (!refreshTokens.includes(refreshToken)) {  // Kiem tra refresh token cua nguoi dung co ton tai trong mang refreshTokens khong    
             return res.status(403).json("Refresh token is not valid!~");
         };
 
-        jwt.verify(refreshToken, process.env.JWT_REFRESH_KEY, (err, user) => {
+        jwt.verify(refreshToken, process.env.JWT_REFRESH_KEY, (err, user) => {  // Kiem tra refresh token co hop le khong
             if (err) {
                 console.log("err >> ", err);
             };
@@ -110,7 +110,7 @@ const authController = {
 
             refreshTokens.push(newRefreshToken); // Luu tru refresh token moi cua nguoi dung
 
-            res.cookie("refreshToken", newRefreshToken, {
+            res.cookie("refreshToken", newRefreshToken, {   // Set lai refresh token moi cho nguoi dung
                     httpOnly: true,
                     secure: false, // true khi deploy
                     path: "/",
