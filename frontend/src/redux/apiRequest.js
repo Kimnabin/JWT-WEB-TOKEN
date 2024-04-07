@@ -37,10 +37,10 @@ export const registerUser = async (user, dispatch, navigate) => {
     }
 }
 
-export const getAllUsers = async (accessToken, dispatch) => {
+export const getAllUsers = async (accessToken, dispatch, axiosJWT) => {
     dispatch(getUsersStart()); // Dispatches the loginStart action
     try {
-        const res = await axios.get("/v1/user", {
+        const res = await axiosJWT.get("/v1/user", {
             headers : {
                 token : `Bearer ${accessToken}`  // Passes the access token in the header
             }
@@ -51,10 +51,10 @@ export const getAllUsers = async (accessToken, dispatch) => {
     }
 }
 
-export const deleteUser = async (accessToken, dispatch, id) => {
+export const deleteUser = async (accessToken, dispatch, id, axiosJWT) => {
     dispatch(deleteUserStart()); // Dispatches the loginStart action
     try {
-        const res = await axios.delete(`/v1/user/` + id, {
+        const res = await axiosJWT.delete(`/v1/user/` + id, {
             headers : {
                 token : `Bearer ${accessToken}`  // Passes the access token in the header
             }
