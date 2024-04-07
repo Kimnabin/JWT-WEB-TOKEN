@@ -11,7 +11,7 @@ const Register = () => {
     const navigate = useNavigate();
 
     const handleRehister = (e) => {
-        e.PreventDefault();  // Prevents the page from refreshing
+        e.preventDefault() ;  // Prevents the page from refreshing
         const newUser = {
             email: email,
             username: username,

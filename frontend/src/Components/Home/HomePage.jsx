@@ -1,47 +1,52 @@
+import { useEffect } from "react";
 import "./home.css";
+import { getAllUsers, deleteUser } from "../../redux/apiRequest";
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+
 
 const HomePage = () => {
-  //DUMMY DATA
-  const userData = [
-    {
-      username: "anhduy1202",
-    },
-    {
-      username: "kelly1234",
-    },
-    {
-      username: "danny5678",
-    },
-    {
-      username: "kenny1122",
-    },
-    {
-      username: "jack1234",
-    },
-    {
-      username: "loi1202",
-    },
-    {
-      username: "nhinhi2009",
-    },
-    {
-      username: "kellynguyen1122",
-    },
-    
-  ];
+  const user = useSelector((state) => state.auth.login?.currentUser);
+  const userList = useSelector((state) => state.users.users?.allUsers);
+  const msg = useSelector((state) => state.users?.msg);
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  
+  // Function to handle the deletion of a user
+  const handleDelete = (id) => {
+    deleteUser(user?.accessToken, dispatch, id);
+  }
+
+  useEffect(() => {   // useEffect is a hook that allows you to run a function after the component has been rendered
+    if (!user) {
+      navigate("/login"); // Redirects the user to the login page
+    }
+    if (user?.accessToken) {
+      getAllUsers(user?.accessToken, dispatch); // Dispatches the getAllUsers action
+    }
+  }, [])
   return (
     <main className="home-container">
       <div className="home-title">User List</div>
+      <div className="home-role">
+        {`Your role: ${user?.admin ? "Admin" : "User"}`}
+      </div>
       <div className="home-userlist">
-        {userData.map((user) => {
+        {/*
+         ? - Optional chaining operator
+         ? - If the value before the ? is null or undefined, the statement after the ? is not executed */}
+        {userList?.map((user) => { // Maps through the userList array
           return (
             <div className="user-container">
               <div className="home-user">{user.username}</div>
-              <div className="delete-user"> Delete </div>
+              <div className="delete-user" onClick={() => handleDelete(user._id)}> Delete </div>
             </div>
           );
         })}
       </div>
+      
+      <div className="errorMessage">{msg}</div>
     </main>
   );
 };

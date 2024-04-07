@@ -11,11 +11,12 @@ const Login = () => {
     const navigate = useNavigate();
 
     const handleLogin = (e) => {
-        e.prevenDefault();  // Prevents the page from refreshing
+        e.preventDefault();  // Prevents the page from refreshing
         const newUser = {
             username: username, 
             password: password,
         };
+        console.log("newUser >> ", newUser);
         loginUser(newUser, dispatch, navigate);
     };
 
@@ -31,9 +32,9 @@ const Login = () => {
                 />
                 <label>PASSWORD</label>
                 <input 
-                type="password" 
-                placeholder="Enter your password" 
-                onChange={(e) => {setPassword(e.target.value)}}
+                    type="password" 
+                    placeholder="Enter your password" 
+                    onChange={(e) => {setPassword(e.target.value)}}
                 />
                 <button type="submit"> Continue </button>
             </form>
