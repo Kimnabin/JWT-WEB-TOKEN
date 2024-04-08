@@ -5,7 +5,10 @@ import  {
         loginFailed, 
         registerStart, 
         registerSuccess, 
-        registerFailed } from './authSlice';
+        registerFailed,
+        logOutStart,
+        logOutSuccess,
+        logOutFailed } from './authSlice';
 import { 
         getUsersStart, 
         getUsersSuccess, 
@@ -62,5 +65,20 @@ export const deleteUser = async (accessToken, dispatch, id, axiosJWT) => {
         dispatch(deleteUserSuccess(res.data));   // Dispatches the loginSuccess action
     } catch (error) {
         dispatch(deleteUserFailed(error.response.data));    // Dispatches the loginFailed action
+    }
+}
+
+export const logOut = async (dispatch, id, navigate, accessToken, axiosJWT) => {
+    dispatch(logOutStart());    // Dispatches the logOutStart action
+    try {
+        await axiosJWT.post("/v1/auth/logout", id, {
+            headers : {
+                token : `Bearer ${accessToken}`  // Passes the access token in the header
+            }
+        })
+        dispatch(logOutSuccess());  // Dispatches the logOutSuccess action
+        navigate("/login"); // Redirects the user to the login page
+    } catch (error) {
+        dispatch(logOutFailed());   // Dispatches the logOutFailed action
     }
 }

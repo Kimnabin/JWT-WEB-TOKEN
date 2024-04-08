@@ -3,54 +3,21 @@ import "./home.css";
 import { getAllUsers, deleteUser } from "../../redux/apiRequest";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import { jwtDecode } from "jwt-decode";
+import { createAxios } from "../../createInstance";
 import { loginSuccess } from "../../redux/authSlice";
 
 const HomePage = () => {
   const user = useSelector((state) => state.auth.login?.currentUser);
   const userList = useSelector((state) => state.users.users?.allUsers);
   const msg = useSelector((state) => state.users?.msg);
-
-  let axiosJWT = axios.create()
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  
+  let axiosJWT = createAxios(user, dispatch, loginSuccess )
   // Function to handle the deletion of a user
   const handleDelete = (id) => {
     deleteUser(user?.accessToken, dispatch, id, axiosJWT);
-  }
+  };
 
-  const refreshToken = async () => {
-    try {
-      const res = await axios.post("/v1/auth/refresh", {
-        withCredentials: true,
-      });
-      return res.data;
-    } catch (error) {
-      console.log("error >> ", error);
-    }
-  }
-
-  axiosJWT.interceptors.request.use(
-    async (config) => {
-      const decodedToken = jwtDecode(user?.accessToken);
-      if (decodedToken.exp * 1000 < Date.now()) {
-        const data = await refreshToken();
-        const refreshUser = {
-          ...user,
-          accessToken: data.accessToken,
-        };
-        dispatch(loginSuccess(refreshUser));
-        config.headers["token"] = "Bearer " + data.accessToken;
-      }
-      return config; 
-    },
-    (error) => {
-      return Promise.reject(error); // Returns a promise that is rejected
-    }
-  );
 
   useEffect(() => {   // useEffect is a hook that allows you to run a function after the component has been rendered
     if (!user) {
